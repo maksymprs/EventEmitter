@@ -3,29 +3,18 @@ type EventHandler = (event: EventBody) => void;
 type EventBody = any;
 
 class EventEmitter {
-  
   private map = new Map<string, Array<EventHandler>>();
   
-   
   on(eventName: EventName, handler: EventHandler): void {
-   
-    if (!this.map.has(eventName){
-      this.map.set(eventName, [handler]);
-    } else {
-        let arr = this.map.get(eventName);
-        arr.push(handler);
-
-    }
+    const arr = this.map.get(eventName);
+    
+    arr ? arr.push(handler) : this.map.set(eventName, [handler]);
   }
 
   emit(eventName: EventName, event: EventBody): void {
+    const actions = this.map.get(eventName);
 
-    if (this.map.has(eventName)){
-        let actions = this.map.get(eventName);
-        actions.forEach(action => action (event));      
-    } else {
-        console.log('no event found');
-    };
+    actions ? actions.forEach(action => action (event)) : console.log('no event found');
   }
 }
 
